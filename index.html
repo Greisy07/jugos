@@ -1,12 +1,390 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Infograma del Registro Docente</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- jsPDF Library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Base body styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        /* Card styling for visual sections */
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow for depth */
+            transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+        }
+        .card:hover {
+            transform: translateY(-5px); /* Lift card slightly on hover */
+        }
+        /* Icon box styling */
+        .icon-box {
+            background-color: #e0f2fe; /* Lighter blue for icons */
+            border-radius: 9999px; /* Full circle shape */
+            padding: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #007bff; /* Primary blue color for icons */
+        }
+        /* Primary button styling */
+        .btn-primary {
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease; /* Smooth color transition on hover */
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* Darker Indigo-700 on hover */
+        }
+        /* Secondary button styling (for PDF generation) */
+        .btn-secondary {
+            background-color: #22c55e; /* Green-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease; /* Smooth color transition on hover */
+        }
+        .btn-secondary:hover {
+            background-color: #16a34a; /* Darker Green-600 on hover */
+        }
+        /* Spinner animation for loading states */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #4f46e5; /* Spinner color */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite; /* Spin animation */
+        }
+        /* Keyframe for the spinner animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body>
-    <h1 style="text-align: center;">Bienvenidos a mi pagina de de jugos de fruta</h1>
-<h2 style="text-align: center;">aqui encontraras variedades de recetas </h2>
+<body class="p-4 sm:p-8 flex items-center justify-center min-h-screen">
+    <div class="max-w-4xl w-full mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">
+                <span class="block text-indigo-600">Registro Docente</span> del Programa de Estudios
+            </h1>
+            <p class="text-lg text-gray-600">
+                Información clave para un perfil completo de nuestros educadores.
+            </p>
+        </header>
+
+        <!-- Grid layout for the main information sections -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <!-- Section 1: Teacher Identification -->
+            <div class="card p-6 flex flex-col items-center text-center">
+                <div class="icon-box mb-4">
+                    <!-- SVG icon for identification -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-700 mb-3">Identificación Docente</h2>
+                <ul class="text-gray-600 text-left w-full px-4">
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Nombre Completo</li>
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Grados Académicos</li>
+                    <li class="flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Título Profesional</li>
+                </ul>
+            </div>
+
+            <!-- Section 2: Experience and Courses -->
+            <div class="card p-6 flex flex-col items-center text-center">
+                <div class="icon-box mb-4">
+                    <!-- SVG icon for experience -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-700 mb-3">Experiencia y Cursos</h2>
+                <ul class="text-gray-600 text-left w-full px-4">
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Cursos que Dicta</li>
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Tiempo de Ejercicio</li>
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Lugares de Ejercicio</li>
+                    <li class="flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Cursos Dictados Previamente</li>
+                </ul>
+            </div>
+
+            <!-- Section 3: Professional Role and Dedication -->
+            <div class="card p-6 flex flex-col items-center text-center">
+                <div class="icon-box mb-4">
+                    <!-- SVG icon for professional role -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-700 mb-3">Rol y Compromiso</h2>
+                <ul class="text-gray-600 text-left w-full px-4">
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Ejercicio Profesional (Docente, Profesional, Investigador)</li>
+                    <li class="flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Dedicación (Tiempo Completo, Parcial, Por Horas)</li>
+                </ul>
+            </div>
+
+            <!-- Section 4: Training and Development -->
+            <div class="card p-6 flex flex-col items-center text-center">
+                <div class="icon-box mb-4">
+                    <!-- SVG icon for training -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-700 mb-3">Formación Continua</h2>
+                <ul class="text-gray-600 text-left w-full px-4">
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> Horas de Capacitación (Últimos 3 años)</li>
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> En Pedagogía</li>
+                    <li class="mb-2 flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> En Didáctica</li>
+                    <li class="flex items-center"><span class="mr-2 text-indigo-500">&#x2022;</span> En su Especialidad</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section for LLM Profile Summary Generation -->
+        <div class="card p-6 mt-10">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">✨ Generar Resumen de Perfil Docente ✨</h2>
+            <p class="text-gray-600 text-center mb-6">Ingresa algunos datos del docente para generar un resumen automático de su perfil.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="docenteNombre" class="block text-gray-700 text-sm font-bold mb-2">Nombre del Docente:</label>
+                    <input type="text" id="docenteNombre" class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ej. Juan Pérez">
+                </div>
+                <div>
+                    <label for="docenteGrados" class="block text-gray-700 text-sm font-bold mb-2">Grados Académicos (separados por coma):</label>
+                    <input type="text" id="docenteGrados" class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ej. Licenciatura, Maestría">
+                </div>
+                <div>
+                    <label for="docenteExperiencia" class="block text-gray-700 text-sm font-bold mb-2">Años de Experiencia Docente:</label>
+                    <input type="number" id="docenteExperiencia" class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ej. 10">
+                </div>
+                <div>
+                    <label for="docenteCapacitacion" class="block text-gray-700 text-sm font-bold mb-2">Horas de Capacitación (últimos 3 años):</label>
+                    <input type="number" id="docenteCapacitacion" class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ej. 120">
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button id="generateSummaryBtn" class="btn-primary flex items-center justify-center">
+                    <span id="buttonText">Generar Resumen</span>
+                    <div id="spinner" class="spinner ml-2 hidden"></div>
+                </button>
+                <button id="generatePdfBtn" class="btn-secondary flex items-center justify-center hidden" disabled>
+                    <!-- SVG icon for PDF download -->
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Generar PDF
+                </button>
+            </div>
+
+            <!-- Output area for the generated summary -->
+            <div id="summaryOutput" class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-xl hidden">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Resumen Generado:</h3>
+                <p id="summaryText" class="text-gray-700 leading-relaxed"></p>
+            </div>
+            <!-- Error message display area -->
+            <div id="errorMessage" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl hidden"></div>
+        </div>
+
+        <footer class="text-center mt-10 text-gray-500 text-sm">
+            <p>&copy; 2025 Programa de Estudios. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script type="module">
+        // Firebase imports (for potential future use, as per instructions)
+        // These imports are included as per standard instructions but are not
+        // directly used in the current LLM/PDF generation logic.
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db, auth;
+        let userId;
+        // Destructure jsPDF from the window object after it's loaded
+        const { jsPDF } = window.jspdf;
+
+        // Initialize Firebase if __firebase_config is provided
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        if (Object.keys(firebaseConfig).length > 0) {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Function to handle Firebase authentication
+            async function authenticateFirebase() {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined') {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    userId = auth.currentUser?.uid || crypto.randomUUID();
+                    console.log("Firebase authenticated. User ID:", userId);
+                } catch (error) {
+                    console.error("Error during Firebase authentication:", error);
+                }
+            }
+            authenticateFirebase();
+        } else {
+            console.warn("Firebase config not found. Running without Firebase services.");
+        }
+
+
+        // Event listener for the "Generar Resumen" button
+        document.getElementById('generateSummaryBtn').addEventListener('click', async () => {
+            // Get input values from the form
+            const docenteNombre = document.getElementById('docenteNombre').value;
+            const docenteGrados = document.getElementById('docenteGrados').value;
+            const docenteExperiencia = document.getElementById('docenteExperiencia').value;
+            const docenteCapacitacion = document.getElementById('docenteCapacitacion').value;
+
+            // Get references to output and control elements
+            const summaryOutput = document.getElementById('summaryOutput');
+            const summaryText = document.getElementById('summaryText');
+            const errorMessage = document.getElementById('errorMessage');
+            const spinner = document.getElementById('spinner');
+            const buttonText = document.getElementById('buttonText');
+            const generatePdfBtn = document.getElementById('generatePdfBtn');
+
+            // Reset UI state
+            summaryOutput.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            summaryText.textContent = '';
+            spinner.classList.remove('hidden');
+            buttonText.textContent = 'Generando...';
+            document.getElementById('generateSummaryBtn').disabled = true;
+            generatePdfBtn.classList.add('hidden'); // Hide PDF button until summary is generated
+            generatePdfBtn.disabled = true;
+
+            // Input validation
+            if (!docenteNombre || !docenteGrados || !docenteExperiencia || !docenteCapacitacion) {
+                errorMessage.textContent = 'Por favor, completa todos los campos para generar el resumen.';
+                errorMessage.classList.remove('hidden');
+                spinner.classList.add('hidden');
+                buttonText.textContent = 'Generar Resumen';
+                document.getElementById('generateSummaryBtn').disabled = false;
+                return;
+            }
+
+            // Construct the prompt for the LLM
+            const prompt = `Genera un resumen conciso del perfil del siguiente docente, destacando sus cualificaciones y experiencia. Proporciona solo el resumen directamente, sin introducciones ni saludos.
+            Nombre: ${docenteNombre}
+            Grados Académicos: ${docenteGrados}
+            Años de Experiencia Docente: ${docenteExperiencia}
+            Horas de Capacitación (últimos 3 años): ${docenteCapacitacion}
+            `;
+
+            // Prepare the payload for the Gemini API call
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Canvas will provide this key at runtime
+
+            try {
+                // Make the API call to Gemini
+                const apiUrl = https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey};
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                // Handle HTTP errors
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(Error ${response.status}: ${errorData.error.message || 'Unknown error'});
+                }
+
+                const result = await response.json();
+
+                // Process the LLM response
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    summaryText.textContent = text;
+                    summaryOutput.classList.remove('hidden');
+                    generatePdfBtn.classList.remove('hidden'); // Show PDF button
+                    generatePdfBtn.disabled = false; // Enable PDF button
+                } else {
+                    errorMessage.textContent = 'No se pudo generar un resumen. Inténtalo de nuevo.';
+                    errorMessage.classList.remove('hidden');
+                }
+            } catch (error) {
+                // Catch and display any errors during the API call
+                console.error("Error al llamar a la API de Gemini:", error);
+                errorMessage.textContent = Ocurrió un error al generar el resumen: ${error.message}. Por favor, inténtalo de nuevo.;
+                errorMessage.classList.remove('hidden');
+            } finally {
+                // Reset button state regardless of success or failure
+                spinner.classList.add('hidden');
+                buttonText.textContent = 'Generar Resumen';
+                document.getElementById('generateSummaryBtn').disabled = false;
+            }
+        });
+
+        // Event listener for the "Generar PDF" button
+        document.getElementById('generatePdfBtn').addEventListener('click', () => {
+            // Get all relevant data for the PDF
+            const docenteNombre = document.getElementById('docenteNombre').value;
+            const docenteGrados = document.getElementById('docenteGrados').value;
+            const docenteExperiencia = document.getElementById('docenteExperiencia').value;
+            const docenteCapacitacion = document.getElementById('docenteCapacitacion').value;
+            const summaryText = document.getElementById('summaryText').textContent;
+
+            // Create a new jsPDF instance
+            const doc = new jsPDF();
+            let yPos = 20; // Initial Y position for text
+
+            // Add title to the PDF
+            doc.setFontSize(22);
+            doc.text("Perfil del Docente", 105, yPos, { align: "center" });
+            yPos += 15;
+
+            // Add generation date
+            doc.setFontSize(14);
+            doc.text(Fecha de Generación: ${new Date().toLocaleDateString('es-ES')}, 105, yPos, { align: "center" });
+            yPos += 20;
+
+            // Add "Datos del Docente" section
+            doc.setFontSize(16);
+            doc.text("Datos del Docente:", 20, yPos);
+            yPos += 10;
+
+            // Add teacher's details
+            doc.setFontSize(12);
+            doc.text(Nombre Completo: ${docenteNombre}, 20, yPos);
+            yPos += 7;
+            doc.text(Grados Académicos: ${docenteGrados}, 20, yPos);
+            yPos += 7;
+            doc.text(Años de Experiencia Docente: ${docenteExperiencia}, 20, yPos);
+            yPos += 7;
+            doc.text(Horas de Capacitación (últimos 3 años): ${docenteCapacitacion}, 20, yPos);
+            yPos += 20;
+
+            // Add AI-generated summary if available
+            if (summaryText) {
+                doc.setFontSize(16);
+                doc.text("Resumen Generado:", 20, yPos);
+                yPos += 10;
+                doc.setFontSize(12);
+                // Split long text into multiple lines to fit page width
+                const splitText = doc.splitTextToSize(summaryText, 170); // Max width of 170mm for text
+                doc.text(splitText, 20, yPos);
+                yPos += (splitText.length * 7) + 10; // Adjust Y position based on text lines
+            }
+
+            // Save the PDF with a dynamic filename
+            doc.save(perfil_docente_${docenteNombre.replace(/\s/g, '_')}.pdf);
+        });
+    </script>
 </body>
 </html>
